@@ -1,3 +1,4 @@
+// 生产端和消费端共享的client实现
 class MQClientInstance{
 
 	// 发送心跳给brokers

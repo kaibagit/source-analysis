@@ -28,6 +28,7 @@ PullMessageService相关逻辑：
 rebalance核心逻辑：
 1、client定时发送心跳给所有broker，心跳中包含（clientId、consumerGroup，订阅的信息等）数据
 2、RebalanceService每隔20s根据topic，从对应borker中拉取consumerGroup的clientId，进行排序，然后重新分配MessageQueue
+3、当消费者变动时，broker会触发notifyConsumerIdsChanged(#)方法，发送通知给所有comsumer;consumer收到通知，也会触发自己的notifyConsumerIdsChanged(#)方法，然后消费端随机从一个broker中拉取消费者的cid列表，重新负载均衡。
 
 
 pullMessage核心逻辑：

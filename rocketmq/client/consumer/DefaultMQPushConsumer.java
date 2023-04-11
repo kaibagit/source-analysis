@@ -1,3 +1,4 @@
+// 对外直接暴露的API类，将所有api转发给DefaultMQPushConsumerImpl
 class DefaultMQPushConsumer{
 
 	private MessageModel messageModel = MessageModel.CLUSTERING;
@@ -48,7 +49,7 @@ class DefaultMQPushConsumer{
 
 
 
-
+// 消费端核心实现类
 class DefaultMQPushConsumerImpl{
 
 	private volatile ServiceState serviceState = ServiceState.CREATE_JUST;

@@ -1,4 +1,18 @@
-class RebalanceService{
+broker端通知consumer负载均衡：
+ClientRemotingProcessor#notifyConsumerIdsChanged
+    ->MQClientInstance#rebalanceImmediately()
+        ->RebalanceService#wakeup()
+
+consumer负载均衡调用逻辑：
+RebalanceService#run()
+    ->MQClientInstance#doRebalance()
+        ->DefaultMQPushConsumerImpl(MQConsumerInner)#doRebalance()
+            ->RebalanceImpl#doRebalance(#)
+                ->RebalanceImpl#rebalanceByTopic(#)
+
+
+
+class RebalanceService extends ServiceThread {
 
 	private final MQClientInstance mqClientFactory;
 
@@ -11,14 +25,6 @@ class RebalanceService{
         ..
 	}
 }
-
-
-
-
-
-
-
-
 
 
 class MQClientInstance{
@@ -106,11 +112,13 @@ class RebalancePushImpl extends RebalanceImpl{
 	protected MQClientInstance mQClientFactory;
 
     // 继承自RebalanceImpl
+    // Topic与分给自己的MessageQueue信息
     // 当updateTopicRouteInfoFromNameServer()时，会建立该信息
     protected final ConcurrentMap<String/* topic */, Set<MessageQueue>> topicSubscribeInfoTable =
         new ConcurrentHashMap<String, Set<MessageQueue>>();
 
 	// 继承自RebalanceImpl
+    // Topic与订阅数据
 	// 订阅信息缓存，当调用DefaultMQPushConsumer#subscribe(topic,subExpression) 时，会往里面加入订阅信息
 	protected final ConcurrentMap<String /* topic */, SubscriptionData> subscriptionInner =
         new ConcurrentHashMap<String, SubscriptionData>();
@@ -132,6 +140,9 @@ class RebalancePushImpl extends RebalanceImpl{
             }
             case CLUSTERING: {
             	Set<MessageQueue> mqSet = this.topicSubscribeInfoTable.get(topic); 
+                //发送请求从Broker中获取该消费组内当前所有的消费者客户端ID，主题的队
+                //列可能分布在多个Broker上，那么请求该发往哪个Broker呢？
+                //RocketeMQ从主题的路由信息表中随机选择一个Broker
                 List<String> cidAll = this.mQClientFactory.findConsumerIdList(topic, consumerGroup);    //这里的cid即为Cunsumer发送给broker心跳信息里的clientId
             	..
                 List<MessageQueue> mqAll = new ArrayList<MessageQueue>();
