@@ -1,0 +1,2 @@
+// 注册中心
+registry://192.168.11.29:2285/com.alibaba.dubbo.registry.RegistryService?application=docking-accept-forecast-service&backup=192.168.11.32:2285,192.168.11.20:2285&default=false&dubbo=2.5.3&pid=34937&registry=zookeeper&timestamp=1551705825855

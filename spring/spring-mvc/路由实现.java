@@ -1,0 +1,2 @@
+spring-mvc会将Controller方法封装进HandlerExecutionChain对象，HandlerExecutionChain里面还包含前置、后置等切面逻辑。
+servlet.service()最后会调用到DispatcherServlet.doDispatch()方法，DispatcherServlet将遍历handlerMappings，直到找到第一个匹配的HandlerExecutionChain。

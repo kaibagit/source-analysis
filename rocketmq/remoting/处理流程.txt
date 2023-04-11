@@ -1,0 +1,16 @@
+NettyRemotingServer处理流程：
+	1、NettyRemotingServer 监听端口
+	2、NettyRemotingServer 收到消息
+	3、NettyDecoder交由RemotingCommand解码，最终生成RemotingCommand对象
+	4、NettyServerHandler处理解码出来的RemotingCommand对象
+		4.1、NettyServerHandler调用NettyRemotingServer#processMessageReceived()
+			4.1.1、判断是请求消息还是响应消息。如果请求消息，交由NettyRemotingServe#processRequestCommand()处理
+				4.1.1.1、根据消息的类型，找到对应的NettyRequestProcessor和ExecutorService
+				4.1.1.2、将消息处理任务交由对应的ExecutorService处理
+					4.1.1.2.1、RPCHook前置处理
+					4.1.1.2.2、NettyRequestProcessor处理
+					4.1.1.2.3、RPCHook后置处理
+
+NettyRemotingClient处理流程：
+	NettyRemotingClient#start()
+		Bootstrap初始化

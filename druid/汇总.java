@@ -1,0 +1,4 @@
+// 总体流程：
+// DruidDataSource初始化时，会创建initialSize数量的连接，并启动CreateConnection和DestroyConnection任务。
+// CreateConnection包含两种方式：默认采用CreateConnectionThread单线程创建；如果DruidDataSource创建时传入了createScheduler，则采用多线程方式提交CreateConnectionTask给scheduler创建。
+// 当池中连接够用时，CreateConnection任务会停止；当池中连接为空，则会唤醒CreateConnection任务，当前线程阻塞，创建连接后，再唤起阻塞线程。
